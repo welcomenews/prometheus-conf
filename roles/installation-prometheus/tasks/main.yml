@@ -1,0 +1,122 @@
+---
+- name: Install add-apt-repostory
+  apt:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - curl
+    - git-core
+    - nginx
+    - certbot
+    - wget
+  when: ansible_pkg_mgr == "apt"
+
+- name: Download and install prometheus
+  shell: |
+    cd /opt
+    wget https://github.com/prometheus/prometheus/releases/download/v2.27.1/prometheus-2.27.1.linux-arm64.tar.gz
+    tar zxvf prometheus-*.tar.gz
+    rm prometheus-*.tar.gz
+    mv prometheus-* prometheus2
+    mkdir /var/lib/prometheus
+    chown -R prometheus:prometheus /opt/prometheus /var/lib/prometheus
+
+- name: Copy prometheus.service
+  copy:
+    src: prometheus.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy prometheus-alertmanager.service
+  copy:
+    src: prometheus-alertmanager.service
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Download and install alertmanager
+  shell: |
+    cd /opt
+    wget https://github.com/prometheus/alertmanager/releases/download/v0.22.2/alertmanager-0.22.2.linux-amd64.tar.gz
+    tar zxvf alertmanager-*.tar.gz
+    rm alertmanager-*.tar.gz
+
+
+- name: Create users
+  shell: |
+    "useradd -M -r -s /bin/{{ item }}"
+  loop:
+    - "nologin prometheus"
+    - "nologin node_exporter"
+    - "nologin alertmanager"
+
+- name: Enable services
+  shell: |
+    systemctl daemon-reload
+    systemctl enable prometheus.service
+    systemctl enable node_exporter.service
+    systemctl enable alertmanager
+    systemctl start prometheus.service
+    systemctl start node_exporter.service
+    systemctl start alertmanager
+
+
+
+
+# - name: Install yarn
+#   shell: |
+#     'curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -'
+#     'echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list'
+#     apt-get install yarn
+#
+# - name: Install ruby
+#   shell: |
+#     su - mastodon
+#     git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+#     cd ~/.rbenv && src/configure && make -C src
+#     echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+#     echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+#     exec bash
+#     git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+#     RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install 2.7.2
+#     rbenv global 2.7.2
+#     rbenv global 2.7.2
+#
+# - name: install bundler
+#   shell: |
+#     gem install bundler --no-document
+#     exit
+#
+# - name: download the latest stable release of Mastodon
+#   shell: |
+#     git clone https://github.com/tootsuite/mastodon.git live && cd live
+#     git checkout $(git tag -l | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)
+#
+# - name: install Ruby and JavaScript dependencies
+#   shell: |
+#     bundle config deployment 'true'
+#     bundle config without 'development test'
+#     bundle install -j$(getconf _NPROCESSORS_ONLN)
+#     yarn install --pure-lockfile
+#
+# - name: Remove default configuration
+#   file:
+#     path: '/etc/nginx/{{ item }}'
+#     state: absent
+#   loop:
+#     - sites-available/default
+#     - sites-enabled/default
+#
+# - name: Copy the configuration template for nginx
+#   template:
+#     src: mastodon
+#     dest: /etc/nginx/sites-available/{{ domain_name }}
+#     owner: root
+#     group: root
+#     mode: '0644'
+#
+# - name:
+#   shell: cp /home/mastodon/live/dist/mastodon-*.service /etc/systemd/system/

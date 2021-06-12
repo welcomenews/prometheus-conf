@@ -1,0 +1,22 @@
+[Unit]
+Description=Prometheus systemd service unit
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/opt/prometheus2 \
+--config.file=/opt/prometheus2/prometheus.yml \
+--storage.tsdb.path=/opt/prometheus2/prometheus \
+--web.console.templates=/opt/prometheus2/consoles \
+--web.console.libraries=/opt/prometheus2/console_libraries \
+--web.listen-address=0.0.0.0:9090
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
