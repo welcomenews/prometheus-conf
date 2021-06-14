@@ -27,9 +27,9 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9090']
 
-  - job_name: 'nodes'
+  # - job_name: 'nodes'
     #    scheme: https
     #    tls_config:
     # ca_file: node_exporter.crt
-    static_configs:
-    - targets: ['192.168.1.6:9100']
+    # static_configs:
+    # - targets: ['192.168.1.6:9100']

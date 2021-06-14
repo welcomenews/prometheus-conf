@@ -6,11 +6,11 @@ After=network-online.target
 [Service]
 Type=simple
 User=prometheus
-Group=prometheus
+Group=nogroup
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart=/opt/prometheus2 \
+ExecStart=/opt/prometheus2/prometheus \
 --config.file=/opt/prometheus2/prometheus.yml \
---storage.tsdb.path=/opt/prometheus2/prometheus \
+--storage.tsdb.path=/var/lib/prometheus \
 --web.console.templates=/opt/prometheus2/consoles \
 --web.console.libraries=/opt/prometheus2/console_libraries \
 --web.listen-address=0.0.0.0:9090

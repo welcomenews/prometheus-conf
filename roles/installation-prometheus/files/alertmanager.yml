@@ -10,23 +10,25 @@ route:
   group_wait: 10s
   group_interval: 1m
   repeat_interval: 1h
+  # receiver: 'web.hook'
   receiver: 'send_mails'
-  #  routes:
-  #  - match:
-  #      job: nodes
-  #    receiver: 'send-mails'
-  #     severity: 'critical'
+  # routes:
+    # - receiver: 'send_mails'
+
 receivers:
+# - name: 'web.hook'
+  # webhook_configs:
+  # - url: 'http://127.0.0.1:5001/'
+
 - name: 'send_mails'
   email_configs:
   - to: 'smtpopenvpn@gmail.com'
-    #  - to: 'Ignatov_S@sbnk.ru'
     #    from: smtpopenvpn@gmail.com
     #    smarthost: smtp.gmail.com:587
     #    auth_username: "smtpopenvpn@gmail.com"
     #    auth_identity: "smtpopenvpn@gmail.com"
     #    auth_password: "70913827"
-      #require_tls: false
+    require_tls: false
     send_resolved: true
 
 inhibit_rules:

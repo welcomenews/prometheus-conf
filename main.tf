@@ -1,10 +1,8 @@
 
 # variable "ssh_key_rebrain" {
-#   default = ""
 # }
 #
 variable "do_token_rebrain" {
-   default = ""
 }
 
 variable "usr_pass" {

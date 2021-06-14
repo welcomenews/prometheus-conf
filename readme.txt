@@ -12,4 +12,4 @@ https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digit
 
 https://www.digitalocean.com/community/tutorials/how-to-use-ansible-with-terraform-for-configuration-management
 
-
+https://prometheus.io/docs/operating/integrations/#alertmanager-webhook-receiver  интеграция в неподдерживаемые сервисы через webhook
