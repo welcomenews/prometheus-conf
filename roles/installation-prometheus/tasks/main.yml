@@ -64,7 +64,7 @@
     - "node_exporter.service"
     - "prometheus.service"
 
-- name: Copy yml files
+- name: Copy files
   copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest}}"
@@ -75,6 +75,7 @@
     - { src: alerts.yml, dest: /opt/prometheus2 }
     - { src: prometheus.yml, dest: /opt/prometheus2 }
     - { src: alertmanager.yml, dest: /opt/alertmanager }
+    - { src: targets.json, dest: /opt/prometheus2 }
 
 - name: Enable services
   shell: |

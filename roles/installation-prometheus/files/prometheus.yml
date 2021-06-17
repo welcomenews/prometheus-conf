@@ -22,10 +22,15 @@ scrape_configs:
   - job_name: 'prometheus'
 
     # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-
+    # scheme defaults to 'http
     static_configs:
     - targets: ['localhost:9090']
+
+  - job_name: 'auto discovery'
+    file_sd_configs:
+    - files:
+      - 'targets.json'
+
 
   # - job_name: 'nodes'
     #    scheme: https

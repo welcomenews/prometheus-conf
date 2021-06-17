@@ -9,5 +9,5 @@
 
   roles:
     # - nginx
-    # - install-virtual-host
     - installation-prometheus
+    - install-grafana  
