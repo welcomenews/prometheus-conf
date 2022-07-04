@@ -68,6 +68,64 @@ Graph old
 -max by (instance) (irate(windows_logical_disk_read_bytes_total[2m]))  Legend: {{instance}}_Read
 max by (instance) (irate(windows_logical_disk_write_bytes_total[2m]))  Legend: {{instance}}_write
 
+## The network details of the maximum traffic network card of each host
+Graph old
+max by (instance) (irate(windows_net_bytes_sent_total{job=~"$job",nic!~'isatap.*|VPN.*'}[2m]))*8  Legend: {{instance}}_Upload
+-max by (instance) (irate(windows_net_bytes_received_total{job=~"$job",nic!~'isatap.*|VPN.*'}[2m]))*8  Legend: {{instance}}_download
+
+## Memory usage of each host
+Graph old
+100.0-100 * windows_os_physical_memory_free_bytes{job=~"$job"} / windows_cs_physical_memory_bytes{job=~"$job"}  Legend: {{instance}}
+
+## CPU usage of each host
+Graph old
+100-(avg by (instance) (irate(windows_cpu_time_total{job=~"$job",mode="idle"}[2m])) * 100)   Legend: {{instance}}
+
+## Global view
+Table
+up
+
+## Utilization rate of each partition
+Bar gauge
+100-(windows_logical_disk_free_bytes{job=~"$job",instance=~"$instance"} / windows_logical_disk_size_bytes{job=~"$job",instance=~"$instance"})*100  Legend: {{volume}}
+
+## Total drives
+Stat
+windows_logical_disk_size_bytes{job=~"$job",instance=~"$instance"}
+
+## Memory Usage
+Gauge
+100-(windows_os_physical_memory_free_bytes{job=~"$job",instance=~"$instance"} / windows_cs_physical_memory_bytes{job=~"$job",instance=~"$instance"})*100
+
+## SWAP Used
+Gauge
+((windows_os_virtual_memory_bytes{job=~"$job",instance=~"$instance"} - windows_os_virtual_memory_free_bytes{job=~"$job",instance=~"$instance"}) / (windows_os_virtual_memory_bytes{job=~"$job",instance=~"$instance"})) * 100
+
+## CPU Usage
+Gauge
+100-(avg(irate(windows_cpu_time_total{job=~"$job",instance=~"$instance",mode="idle"}[2m])))*100 
+
+## CPU core number
+Stat
+windows_cs_logical_processors{job=~"$job",instance=~"$instance"}
+
+## Startup time
+Stat
+time()-windows_system_system_up_time{job=~"$job",instance=~"$instance"}
+
+## $job: Server Resource Overview
+Table old
+windows_os_info{job=~"$job"} * on(instance) group_right(product) windows_cs_hostname
+time()-windows_system_system_up_time{job=~"$job"}
+windows_cs_logical_processors{job=~"$job"}-0
+avg by (instance) (windows_cpu_core_frequency_mhz{job=~"$job"})
+100-(avg by (instance) (irate(windows_cpu_time_total{job=~"$job",mode="idle"}[2m])) * 100)
+windows_cs_physical_memory_bytes{job=~"$job"}-0
+100-100 * windows_os_physical_memory_free_bytes{job=~"$job"} / windows_cs_physical_memory_bytes{job=~"$job"}
+1-(windows_logical_disk_free_bytes{job=~"$job",volume=~"C:"}/windows_logical_disk_size_bytes{job=~"$job",volume=~"C: "})
+max by (instance) (1-windows_logical_disk_free_bytes{job=~"$job"}/windows_logical_disk_size_bytes{job=~"$job"})
+windows_os_processes{job=~"$job"}
+sum by (instance) (windows_service_state{job=~"$job",state=~"running"})
 
 
 
