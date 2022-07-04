@@ -113,6 +113,10 @@ windows_cs_logical_processors{job=~"$job",instance=~"$instance"}
 Stat
 time()-windows_system_system_up_time{job=~"$job",instance=~"$instance"}
 
+## Total Memory
+Stat
+windows_cs_physical_memory_bytes{job=~"$job",instance=~"$instance"}
+
 ## $job: Server Resource Overview
 Table old
 windows_os_info{job=~"$job"} * on(instance) group_right(product) windows_cs_hostname
