@@ -131,7 +131,9 @@ max by (instance) (1-windows_logical_disk_free_bytes{job=~"$job"}/windows_logica
 windows_os_processes{job=~"$job"}
 sum by (instance) (windows_service_state{job=~"$job",state=~"running"})
 
-
+## system_threads
+Graph old
+windows_system_threads{job=~"$job",instance=~"$instance"}  Legend: system_threads
 
 ```
 
