@@ -10,6 +10,9 @@ floor(100 - (avg by (instance) (rate (node_cpu_seconds_total{mode="idle"}[1m])) 
 ## доступно места на жёстком диске в директории /  в MB
 node_filesystem_avail_bytes{mountpoint="/", device!="tmpfs"} / 1024 / 1024
 
+## Общий размер диска
+sum(node_filesystem_size_bytes) / 1024 / 1024 / 1024
+
 ## загрузка системы за последние 15 минут
 node_load15
 
