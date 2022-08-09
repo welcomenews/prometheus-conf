@@ -108,6 +108,8 @@ Gauge
 ## CPU core number
 Stat
 windows_cs_logical_processors{job=~"$job",instance=~"$instance"}
+в Linux
+count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})
 
 ## Startup time
 Stat
