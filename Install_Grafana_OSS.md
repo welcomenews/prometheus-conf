@@ -1,6 +1,7 @@
 #### To install the latest OSS release:
 
-$ sudo apt-get install -y apt-transport-https
+<$ sudo apt-get install -y apt-transport-https>
+
 $ sudo apt-get install -y software-properties-common wget
 
 $ sudo wget -q -O /usr/share/keyrings/grafana.key https://packages.grafana.com/gpg.key
