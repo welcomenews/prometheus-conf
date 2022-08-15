@@ -27,6 +27,9 @@ Disk IO
 Graph old
 irate(windows_logical_disk_reads_total{job=~"$job",instance=~"$instance"}[5m])  Legend: read {{volume}}
 irate(windows_logical_disk_writes_total{job=~"$job",instance=~"$instance"}[5m]) Legend: write {{volume}}
+или linux
+avg by (device) (irate(node_disk_read_bytes_total{device!="sr0", job="$job"}[5m]))      read
+avg by (device) (irate(node_disk_written_bytes_total{device!="sr0", job="$job"}[5m]))   write
 
 ## Network usage 
 Graph old
@@ -52,6 +55,8 @@ irate(windows_net_bytes_received_total{job=~"$job",instance=~"$instance",nic!~'i
 ## Number of Processes
 Graph old
 windows_os_processes{job=~"$job",instance=~"$instance"}  Legend: Number of Processes
+или linux
+count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})
 
 ## Service Status
 Graph old
@@ -75,6 +80,9 @@ max by (instance) (irate(windows_logical_disk_write_bytes_total[2m]))  Legend: {
 Graph old
 max by (instance) (irate(windows_net_bytes_sent_total{job=~"$job",nic!~'isatap.*|VPN.*'}[2m]))*8  Legend: {{instance}}_Upload
 -max by (instance) (irate(windows_net_bytes_received_total{job=~"$job",nic!~'isatap.*|VPN.*'}[2m]))*8  Legend: {{instance}}_download
+или linux
+irate(node_network_receive_bytes_total{device="enp0s3", job="$job"}[5m])*8     download
+irate(node_network_transmit_bytes_total{device="enp0s3", job="$job"}[5m])*8>0  upload
 
 ## Memory usage of each host
 Graph old
@@ -91,6 +99,8 @@ up
 ## Utilization rate of each partition
 Bar gauge
 100-(windows_logical_disk_free_bytes{job=~"$job",instance=~"$instance"} / windows_logical_disk_size_bytes{job=~"$job",instance=~"$instance"})*100  Legend: {{volume}}
+или linux
+100-(node_filesystem_avail_bytes / node_filesystem_size_bytes)*100
 
 ## Total drives
 Stat
@@ -99,6 +109,8 @@ windows_logical_disk_size_bytes{job=~"$job",instance=~"$instance"}
 ## Memory Usage
 Gauge
 100-(windows_os_physical_memory_free_bytes{job=~"$job",instance=~"$instance"} / windows_cs_physical_memory_bytes{job=~"$job",instance=~"$instance"})*100
+или linux
+100-((node_memory_MemFree_bytes + node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes)*100
 
 ## SWAP Used
 Gauge
@@ -106,7 +118,9 @@ Gauge
 
 ## CPU Usage
 Gauge
-100-(avg(irate(windows_cpu_time_total{job=~"$job",instance=~"$instance",mode="idle"}[2m])))*100 
+100-(avg(irate(windows_cpu_time_total{job=~"$job",instance=~"$instance",mode="idle"}[2m])))*100
+или linux
+100-(avg(irate(node_cpu_seconds_total{mode="idle"}[30s])))*100
 
 ## CPU core number
 Stat
@@ -121,6 +135,8 @@ time()-windows_system_system_up_time{job=~"$job",instance=~"$instance"}
 ## Total Memory
 Stat
 windows_cs_physical_memory_bytes{job=~"$job",instance=~"$instance"}
+или linux
+floor(node_memory_MemTotal_bytes / 1024 / 1024 / 1024)
 
 ## $job: Server Resource Overview
 Table old
