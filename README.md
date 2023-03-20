@@ -10,6 +10,9 @@ floor(100 - (avg by (instance) (rate (node_cpu_seconds_total{mode="idle"}[1m])) 
 ## доступно места на жёстком диске в директории /  в MB
 node_filesystem_avail_bytes{mountpoint="/", device!="tmpfs"} / 1024 / 1024
 
+## Сколько утекает памяти на диске в байтах
+delta(node_filesystem_avail_bytes {device!="tmpfs"[45s]})
+
 ## Общий размер диска
 sum(node_filesystem_size_bytes) / 1024 / 1024 / 1024
 
