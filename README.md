@@ -164,3 +164,5 @@ windows_system_threads{job=~"$job",instance=~"$instance"}  Legend: system_thread
 
 #### Правила.
 https://awesome-prometheus-alerts.grep.to/rules.html
+
+https://prometheus.io/docs/instrumenting/exporters/#exporters-and-integrations
